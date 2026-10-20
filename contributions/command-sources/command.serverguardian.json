@@ -123,7 +123,7 @@
         ],
         "default_mode": "review",
         "matcher": {
-          "op": "arguments.v1",
+          "op": "leading-subcommand.v1",
           "config": {
             "executables": [
               "apt",
@@ -133,7 +133,7 @@
               "apt-get.cmd",
               "apt-get.exe"
             ],
-            "required_arguments": [
+            "subcommands": [
               "update"
             ]
           }
@@ -159,20 +159,58 @@
         ],
         "default_mode": "review",
         "matcher": {
-          "op": "arguments.v1",
-          "config": {
-            "executables": [
-              "apt",
-              "apt.cmd",
-              "apt.exe",
-              "apt-get",
-              "apt-get.cmd",
-              "apt-get.exe"
-            ],
-            "required_arguments": [
-              "upgrade"
-            ]
-          }
+          "op": "any.v1",
+          "config": {},
+          "matchers": [
+            {
+              "op": "leading-subcommand.v1",
+              "config": {
+                "executables": [
+                  "apt",
+                  "apt.cmd",
+                  "apt.exe",
+                  "apt-get",
+                  "apt-get.cmd",
+                  "apt-get.exe"
+                ],
+                "subcommands": [
+                  "upgrade"
+                ]
+              }
+            },
+            {
+              "op": "leading-subcommand.v1",
+              "config": {
+                "executables": [
+                  "apt",
+                  "apt.cmd",
+                  "apt.exe",
+                  "apt-get",
+                  "apt-get.cmd",
+                  "apt-get.exe"
+                ],
+                "subcommands": [
+                  "full-upgrade"
+                ]
+              }
+            },
+            {
+              "op": "leading-subcommand.v1",
+              "config": {
+                "executables": [
+                  "apt",
+                  "apt.cmd",
+                  "apt.exe",
+                  "apt-get",
+                  "apt-get.cmd",
+                  "apt-get.exe"
+                ],
+                "subcommands": [
+                  "dist-upgrade"
+                ]
+              }
+            }
+          ]
         },
         "safe_variants": []
       },
@@ -195,17 +233,37 @@
         ],
         "default_mode": "review",
         "matcher": {
-          "op": "arguments.v1",
-          "config": {
-            "executables": [
-              "docker",
-              "docker.cmd",
-              "docker.exe"
-            ],
-            "required_arguments": [
-              "pull"
-            ]
-          }
+          "op": "any.v1",
+          "config": {},
+          "matchers": [
+            {
+              "op": "leading-subcommand.v1",
+              "config": {
+                "executables": [
+                  "docker",
+                  "docker.cmd",
+                  "docker.exe"
+                ],
+                "subcommands": [
+                  "pull"
+                ]
+              }
+            },
+            {
+              "op": "leading-subcommand.v1",
+              "config": {
+                "executables": [
+                  "docker",
+                  "docker.cmd",
+                  "docker.exe"
+                ],
+                "subcommands": [
+                  "image",
+                  "pull"
+                ]
+              }
+            }
+          ]
         },
         "safe_variants": []
       },
@@ -232,41 +290,71 @@
           "config": {},
           "matchers": [
             {
-              "op": "arguments.v1",
+              "op": "leading-subcommand.v1",
               "config": {
                 "executables": [
-                  "docker",
-                  "docker.cmd",
-                  "docker.exe"
+                  "docker"
                 ],
-                "required_arguments": [
+                "subcommands": [
+                  "container",
                   "run"
                 ]
               }
             },
             {
-              "op": "arguments.v1",
+              "op": "leading-subcommand.v1",
               "config": {
                 "executables": [
-                  "docker",
-                  "docker.cmd",
-                  "docker.exe"
+                  "docker"
                 ],
-                "required_arguments": [
+                "subcommands": [
+                  "container",
                   "create"
                 ]
               }
             },
             {
-              "op": "arguments.v1",
+              "op": "leading-subcommand.v1",
+              "config": {
+                "executables": [
+                  "docker"
+                ],
+                "subcommands": [
+                  "run"
+                ]
+              }
+            },
+            {
+              "op": "leading-subcommand.v1",
+              "config": {
+                "executables": [
+                  "docker"
+                ],
+                "subcommands": [
+                  "create"
+                ]
+              }
+            },
+            {
+              "op": "leading-subcommand.v1",
               "config": {
                 "executables": [
                   "docker",
-                  "docker.cmd",
-                  "docker.exe"
+                  "docker-compose"
                 ],
-                "required_arguments": [
+                "subcommands": [
                   "compose",
+                  "up"
+                ]
+              }
+            },
+            {
+              "op": "leading-subcommand.v1",
+              "config": {
+                "executables": [
+                  "docker-compose"
+                ],
+                "subcommands": [
                   "up"
                 ]
               }
@@ -319,7 +407,7 @@
         "safer_alternatives": [],
         "default_mode": "disabled",
         "matcher": {
-          "op": "arguments.v1",
+          "op": "command-sequence.v1",
           "config": {
             "executables": [
               "python",
@@ -327,9 +415,14 @@
               "python.exe",
               "python3.exe"
             ],
-            "required_arguments": [
-              "mailer.py",
-              "--notify"
+            "command_arities": [
+              [
+                "server-guardian/mailer.py",
+                1
+              ]
+            ],
+            "target_commands": [
+              "server-guardian/mailer.py"
             ]
           }
         },
