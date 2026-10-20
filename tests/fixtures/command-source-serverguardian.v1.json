@@ -138,9 +138,6 @@
                     "apt-get.cmd",
                     "apt-get.exe"
                   ],
-                  "subcommands": [
-                    "update"
-                  ],
                   "options_with_values": [
                     "-o",
                     "--option",
@@ -148,6 +145,9 @@
                     "--config-file",
                     "-t",
                     "--target-release"
+                  ],
+                  "subcommands": [
+                    "update"
                   ]
                 }
               },
@@ -186,9 +186,6 @@
                         "apt-get.cmd",
                         "apt-get.exe"
                       ],
-                      "subcommands": [
-                        "upgrade"
-                      ],
                       "options_with_values": [
                         "-o",
                         "--option",
@@ -196,6 +193,9 @@
                         "--config-file",
                         "-t",
                         "--target-release"
+                      ],
+                      "subcommands": [
+                        "upgrade"
                       ]
                     }
                   },
@@ -209,17 +209,17 @@
                         "apt-get",
                         "apt-get.cmd",
                         "apt-get.exe"
+                      ],
+                      "options_with_values": [
+                        "-o",
+                        "--option",
+                        "-c",
+                        "--config-file",
+                        "-t",
+                        "--target-release"
                       ],
                       "subcommands": [
                         "full-upgrade"
-                      ],
-                      "options_with_values": [
-                        "-o",
-                        "--option",
-                        "-c",
-                        "--config-file",
-                        "-t",
-                        "--target-release"
                       ]
                     }
                   },
@@ -234,9 +234,6 @@
                         "apt-get.cmd",
                         "apt-get.exe"
                       ],
-                      "subcommands": [
-                        "dist-upgrade"
-                      ],
                       "options_with_values": [
                         "-o",
                         "--option",
@@ -244,6 +241,9 @@
                         "--config-file",
                         "-t",
                         "--target-release"
+                      ],
+                      "subcommands": [
+                        "dist-upgrade"
                       ]
                     }
                   }
@@ -281,9 +281,6 @@
                         "docker.cmd",
                         "docker.exe"
                       ],
-                      "subcommands": [
-                        "pull"
-                      ],
                       "options_with_values": [
                         "-H",
                         "--host",
@@ -305,10 +302,6 @@
                         "docker",
                         "docker.cmd",
                         "docker.exe"
-                      ],
-                      "subcommands": [
-                        "image",
-                        "pull"
                       ],
                       "options_with_values": [
                         "-H",
@@ -358,9 +351,27 @@
                         "docker.cmd",
                         "docker.exe"
                       ],
-                      "subcommands": [
-                        "container",
-                        "run"
+                      "options_with_values": [
+                        "-H",
+                        "--host",
+                        "-c",
+                        "--context",
+                        "--config",
+                        "-l",
+                        "--log-level",
+                        "--tlscacert",
+                        "--tlscert",
+                        "--tlskey"
+                      ]
+                    }
+                  },
+                  {
+                    "op": "leading-subcommand.v1",
+                    "config": {
+                      "executables": [
+                        "docker",
+                        "docker.cmd",
+                        "docker.exe"
                       ],
                       "options_with_values": [
                         "-H",
@@ -384,10 +395,6 @@
                         "docker.cmd",
                         "docker.exe"
                       ],
-                      "subcommands": [
-                        "container",
-                        "create"
-                      ],
                       "options_with_values": [
                         "-H",
                         "--host",
@@ -409,34 +416,6 @@
                         "docker",
                         "docker.cmd",
                         "docker.exe"
-                      ],
-                      "subcommands": [
-                        "run"
-                      ],
-                      "options_with_values": [
-                        "-H",
-                        "--host",
-                        "-c",
-                        "--context",
-                        "--config",
-                        "-l",
-                        "--log-level",
-                        "--tlscacert",
-                        "--tlscert",
-                        "--tlskey"
-                      ]
-                    }
-                  },
-                  {
-                    "op": "leading-subcommand.v1",
-                    "config": {
-                      "executables": [
-                        "docker",
-                        "docker.cmd",
-                        "docker.exe"
-                      ],
-                      "subcommands": [
-                        "create"
                       ],
                       "options_with_values": [
                         "-H",
@@ -462,10 +441,6 @@
                         "docker-compose",
                         "docker-compose.cmd",
                         "docker-compose.exe"
-                      ],
-                      "subcommands": [
-                        "compose",
-                        "up"
                       ],
                       "options_with_values": [
                         "-H",
@@ -502,9 +477,6 @@
                         "docker-compose",
                         "docker-compose.cmd",
                         "docker-compose.exe"
-                      ],
-                      "subcommands": [
-                        "up"
                       ],
                       "options_with_values": [
                         "-H",
@@ -938,10 +910,8 @@
       "enabled_extensions": [
         "command.serverguardian"
       ],
-      "expected_action": "allow",
-      "expected_effective_segments": [
-        0
-      ],
+      "expected_action": "review",
+      "expected_effective_segments": [],
       "id": "telemetry-free",
       "rule_id": "command.serverguardian.telemetry-startup"
     },
@@ -951,7 +921,7 @@
       "enabled_extensions": [
         "command.serverguardian"
       ],
-      "expected_action": "allow",
+      "expected_action": "review",
       "expected_effective_segments": [
         0
       ],
@@ -964,7 +934,7 @@
       "enabled_extensions": [
         "command.serverguardian"
       ],
-      "expected_action": "allow",
+      "expected_action": "review",
       "expected_effective_segments": [
         0
       ],
