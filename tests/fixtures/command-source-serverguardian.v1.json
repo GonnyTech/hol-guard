@@ -140,6 +140,14 @@
                   ],
                   "subcommands": [
                     "update"
+                  ],
+                  "options_with_values": [
+                    "-o",
+                    "--option",
+                    "-c",
+                    "--config-file",
+                    "-t",
+                    "--target-release"
                   ]
                 }
               },
@@ -180,6 +188,14 @@
                       ],
                       "subcommands": [
                         "upgrade"
+                      ],
+                      "options_with_values": [
+                        "-o",
+                        "--option",
+                        "-c",
+                        "--config-file",
+                        "-t",
+                        "--target-release"
                       ]
                     }
                   },
@@ -196,6 +212,14 @@
                       ],
                       "subcommands": [
                         "full-upgrade"
+                      ],
+                      "options_with_values": [
+                        "-o",
+                        "--option",
+                        "-c",
+                        "--config-file",
+                        "-t",
+                        "--target-release"
                       ]
                     }
                   },
@@ -212,6 +236,14 @@
                       ],
                       "subcommands": [
                         "dist-upgrade"
+                      ],
+                      "options_with_values": [
+                        "-o",
+                        "--option",
+                        "-c",
+                        "--config-file",
+                        "-t",
+                        "--target-release"
                       ]
                     }
                   }
@@ -251,6 +283,13 @@
                       ],
                       "subcommands": [
                         "pull"
+                      ],
+                      "options_with_values": [
+                        "-H",
+                        "--host",
+                        "--context",
+                        "--config",
+                        "--log-level"
                       ]
                     }
                   },
@@ -265,6 +304,13 @@
                       "subcommands": [
                         "image",
                         "pull"
+                      ],
+                      "options_with_values": [
+                        "-H",
+                        "--host",
+                        "--context",
+                        "--config",
+                        "--log-level"
                       ]
                     }
                   }
@@ -298,45 +344,20 @@
                     "op": "leading-subcommand.v1",
                     "config": {
                       "executables": [
-                        "docker"
+                        "docker",
+                        "docker.cmd",
+                        "docker.exe"
                       ],
                       "subcommands": [
                         "container",
                         "run"
-                      ]
-                    }
-                  },
-                  {
-                    "op": "leading-subcommand.v1",
-                    "config": {
-                      "executables": [
-                        "docker"
                       ],
-                      "subcommands": [
-                        "container",
-                        "create"
-                      ]
-                    }
-                  },
-                  {
-                    "op": "leading-subcommand.v1",
-                    "config": {
-                      "executables": [
-                        "docker"
-                      ],
-                      "subcommands": [
-                        "run"
-                      ]
-                    }
-                  },
-                  {
-                    "op": "leading-subcommand.v1",
-                    "config": {
-                      "executables": [
-                        "docker"
-                      ],
-                      "subcommands": [
-                        "create"
+                      "options_with_values": [
+                        "-H",
+                        "--host",
+                        "--context",
+                        "--config",
+                        "--log-level"
                       ]
                     }
                   },
@@ -345,11 +366,19 @@
                     "config": {
                       "executables": [
                         "docker",
-                        "docker-compose"
+                        "docker.cmd",
+                        "docker.exe"
                       ],
                       "subcommands": [
-                        "compose",
-                        "up"
+                        "container",
+                        "create"
+                      ],
+                      "options_with_values": [
+                        "-H",
+                        "--host",
+                        "--context",
+                        "--config",
+                        "--log-level"
                       ]
                     }
                   },
@@ -357,10 +386,83 @@
                     "op": "leading-subcommand.v1",
                     "config": {
                       "executables": [
-                        "docker-compose"
+                        "docker",
+                        "docker.cmd",
+                        "docker.exe"
+                      ],
+                      "subcommands": [
+                        "run"
+                      ],
+                      "options_with_values": [
+                        "-H",
+                        "--host",
+                        "--context",
+                        "--config",
+                        "--log-level"
+                      ]
+                    }
+                  },
+                  {
+                    "op": "leading-subcommand.v1",
+                    "config": {
+                      "executables": [
+                        "docker",
+                        "docker.cmd",
+                        "docker.exe"
+                      ],
+                      "subcommands": [
+                        "create"
+                      ],
+                      "options_with_values": [
+                        "-H",
+                        "--host",
+                        "--context",
+                        "--config",
+                        "--log-level"
+                      ]
+                    }
+                  },
+                  {
+                    "op": "leading-subcommand.v1",
+                    "config": {
+                      "executables": [
+                        "docker",
+                        "docker.cmd",
+                        "docker.exe",
+                        "docker-compose",
+                        "docker-compose.cmd",
+                        "docker-compose.exe"
+                      ],
+                      "subcommands": [
+                        "compose",
+                        "up"
+                      ],
+                      "options_with_values": [
+                        "-H",
+                        "--host",
+                        "--context",
+                        "--config",
+                        "--log-level"
+                      ]
+                    }
+                  },
+                  {
+                    "op": "leading-subcommand.v1",
+                    "config": {
+                      "executables": [
+                        "docker-compose",
+                        "docker-compose.cmd",
+                        "docker-compose.exe"
                       ],
                       "subcommands": [
                         "up"
+                      ],
+                      "options_with_values": [
+                        "-H",
+                        "--host",
+                        "--context",
+                        "--config",
+                        "--log-level"
                       ]
                     }
                   }
@@ -391,7 +493,9 @@
                     "server-guardian.cmd",
                     "server-guardian.exe"
                   ],
-                  "required_arguments": []
+                  "required_arguments": [
+                    "--telemetry-only"
+                  ]
                 }
               },
               "safe_variants": []
@@ -745,39 +849,27 @@
     {
       "command": "server-guardian",
       "disabled_permissions": [],
-      "enabled_extensions": [
-        "command.serverguardian"
-      ],
-      "expected_action": "allow",
-      "expected_effective_segments": [
-        0
-      ],
+      "enabled_extensions": [],
+      "expected_action": "review",
+      "expected_effective_segments": [],
       "id": "telemetry-free",
       "rule_id": "command.serverguardian.telemetry-startup"
     },
     {
       "command": "python server-guardian/mailer.py --notify",
       "disabled_permissions": [],
-      "enabled_extensions": [
-        "command.serverguardian"
-      ],
-      "expected_action": "allow",
-      "expected_effective_segments": [
-        0
-      ],
+      "enabled_extensions": [],
+      "expected_action": "review",
+      "expected_effective_segments": [],
       "id": "mailer-free",
       "rule_id": "command.serverguardian.telemetry-mailer"
     },
     {
       "command": "python3 server-guardian/mailer.py --notify",
       "disabled_permissions": [],
-      "enabled_extensions": [
-        "command.serverguardian"
-      ],
-      "expected_action": "allow",
-      "expected_effective_segments": [
-        0
-      ],
+      "enabled_extensions": [],
+      "expected_action": "review",
+      "expected_effective_segments": [],
       "id": "linux-mailer-free",
       "rule_id": "command.serverguardian.telemetry-mailer"
     },
