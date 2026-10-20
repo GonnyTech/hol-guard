@@ -119,9 +119,6 @@
                     "apt-get.cmd",
                     "apt-get.exe"
                   ],
-                  "subcommands": [
-                    "update"
-                  ],
                   "options_with_values": [
                     "-o",
                     "--option",
@@ -129,6 +126,9 @@
                     "--config-file",
                     "-t",
                     "--target-release"
+                  ],
+                  "subcommands": [
+                    "update"
                   ]
                 },
                 "op": "leading-subcommand.v1"
@@ -166,9 +166,6 @@
                         "apt-get.cmd",
                         "apt-get.exe"
                       ],
-                      "subcommands": [
-                        "upgrade"
-                      ],
                       "options_with_values": [
                         "-o",
                         "--option",
@@ -176,6 +173,9 @@
                         "--config-file",
                         "-t",
                         "--target-release"
+                      ],
+                      "subcommands": [
+                        "upgrade"
                       ]
                     },
                     "op": "leading-subcommand.v1"
@@ -189,17 +189,17 @@
                         "apt-get",
                         "apt-get.cmd",
                         "apt-get.exe"
+                      ],
+                      "options_with_values": [
+                        "-o",
+                        "--option",
+                        "-c",
+                        "--config-file",
+                        "-t",
+                        "--target-release"
                       ],
                       "subcommands": [
                         "full-upgrade"
-                      ],
-                      "options_with_values": [
-                        "-o",
-                        "--option",
-                        "-c",
-                        "--config-file",
-                        "-t",
-                        "--target-release"
                       ]
                     },
                     "op": "leading-subcommand.v1"
@@ -214,9 +214,6 @@
                         "apt-get.cmd",
                         "apt-get.exe"
                       ],
-                      "subcommands": [
-                        "dist-upgrade"
-                      ],
                       "options_with_values": [
                         "-o",
                         "--option",
@@ -224,6 +221,9 @@
                         "--config-file",
                         "-t",
                         "--target-release"
+                      ],
+                      "subcommands": [
+                        "dist-upgrade"
                       ]
                     },
                     "op": "leading-subcommand.v1"
@@ -261,15 +261,15 @@
                         "docker.cmd",
                         "docker.exe"
                       ],
-                      "subcommands": [
-                        "pull"
-                      ],
                       "options_with_values": [
                         "-H",
                         "--host",
                         "--context",
                         "--config",
                         "--log-level"
+                      ],
+                      "subcommands": [
+                        "pull"
                       ]
                     },
                     "op": "leading-subcommand.v1"
@@ -281,16 +281,16 @@
                         "docker.cmd",
                         "docker.exe"
                       ],
-                      "subcommands": [
-                        "image",
-                        "pull"
-                      ],
                       "options_with_values": [
                         "-H",
                         "--host",
                         "--context",
                         "--config",
                         "--log-level"
+                      ],
+                      "subcommands": [
+                        "image",
+                        "pull"
                       ]
                     },
                     "op": "leading-subcommand.v1"
@@ -328,16 +328,16 @@
                         "docker.cmd",
                         "docker.exe"
                       ],
-                      "subcommands": [
-                        "container",
-                        "run"
-                      ],
                       "options_with_values": [
                         "-H",
                         "--host",
                         "--context",
                         "--config",
                         "--log-level"
+                      ],
+                      "subcommands": [
+                        "container",
+                        "run"
                       ]
                     },
                     "op": "leading-subcommand.v1"
@@ -348,17 +348,17 @@
                         "docker",
                         "docker.cmd",
                         "docker.exe"
+                      ],
+                      "options_with_values": [
+                        "-H",
+                        "--host",
+                        "--context",
+                        "--config",
+                        "--log-level"
                       ],
                       "subcommands": [
                         "container",
                         "create"
-                      ],
-                      "options_with_values": [
-                        "-H",
-                        "--host",
-                        "--context",
-                        "--config",
-                        "--log-level"
                       ]
                     },
                     "op": "leading-subcommand.v1"
@@ -369,16 +369,16 @@
                         "docker",
                         "docker.cmd",
                         "docker.exe"
+                      ],
+                      "options_with_values": [
+                        "-H",
+                        "--host",
+                        "--context",
+                        "--config",
+                        "--log-level"
                       ],
                       "subcommands": [
                         "run"
-                      ],
-                      "options_with_values": [
-                        "-H",
-                        "--host",
-                        "--context",
-                        "--config",
-                        "--log-level"
                       ]
                     },
                     "op": "leading-subcommand.v1"
@@ -390,15 +390,15 @@
                         "docker.cmd",
                         "docker.exe"
                       ],
-                      "subcommands": [
-                        "create"
-                      ],
                       "options_with_values": [
                         "-H",
                         "--host",
                         "--context",
                         "--config",
                         "--log-level"
+                      ],
+                      "subcommands": [
+                        "create"
                       ]
                     },
                     "op": "leading-subcommand.v1"
@@ -413,16 +413,16 @@
                         "docker-compose.cmd",
                         "docker-compose.exe"
                       ],
-                      "subcommands": [
-                        "compose",
-                        "up"
-                      ],
                       "options_with_values": [
                         "-H",
                         "--host",
                         "--context",
                         "--config",
                         "--log-level"
+                      ],
+                      "subcommands": [
+                        "compose",
+                        "up"
                       ]
                     },
                     "op": "leading-subcommand.v1"
@@ -434,15 +434,15 @@
                         "docker-compose.cmd",
                         "docker-compose.exe"
                       ],
-                      "subcommands": [
-                        "up"
-                      ],
                       "options_with_values": [
                         "-H",
                         "--host",
                         "--context",
                         "--config",
                         "--log-level"
+                      ],
+                      "subcommands": [
+                        "up"
                       ]
                     },
                     "op": "leading-subcommand.v1"
@@ -477,8 +477,11 @@
                     "server-guardian.cmd",
                     "server-guardian.exe"
                   ],
-                  "required_arguments": []
-                }
+                  "required_arguments": [
+                    "--telemetry-only"
+                  ]
+                },
+                "op": "arguments.v1"
               },
               "permission_id": "command.serverguardian.permission.telemetry",
               "risk_classes": [
@@ -849,10 +852,8 @@
       "enabled_extensions": [
         "command.serverguardian"
       ],
-      "expected_action": "allow",
-      "expected_effective_segments": [
-        0
-      ],
+      "expected_action": "review",
+      "expected_effective_segments": [],
       "id": "telemetry-free",
       "rule_id": "command.serverguardian.telemetry-startup"
     },
@@ -862,7 +863,7 @@
       "enabled_extensions": [
         "command.serverguardian"
       ],
-      "expected_action": "allow",
+      "expected_action": "review",
       "expected_effective_segments": [
         0
       ],
@@ -875,7 +876,7 @@
       "enabled_extensions": [
         "command.serverguardian"
       ],
-      "expected_action": "allow",
+      "expected_action": "review",
       "expected_effective_segments": [
         0
       ],
