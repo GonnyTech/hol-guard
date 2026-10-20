@@ -282,9 +282,14 @@
                 "options_with_values": [
                   "-H",
                   "--host",
+                  "-c",
                   "--context",
                   "--config",
-                  "--log-level"
+                  "-l",
+                  "--log-level",
+                  "--tlscacert",
+                  "--tlscert",
+                  "--tlskey"
                 ]
               }
             },
@@ -303,9 +308,14 @@
                 "options_with_values": [
                   "-H",
                   "--host",
+                  "-c",
                   "--context",
                   "--config",
-                  "--log-level"
+                  "-l",
+                  "--log-level",
+                  "--tlscacert",
+                  "--tlscert",
+                  "--tlskey"
                 ]
               }
             }
@@ -350,9 +360,14 @@
                 "options_with_values": [
                   "-H",
                   "--host",
+                  "-c",
                   "--context",
                   "--config",
-                  "--log-level"
+                  "-l",
+                  "--log-level",
+                  "--tlscacert",
+                  "--tlscert",
+                  "--tlskey"
                 ]
               }
             },
@@ -371,9 +386,14 @@
                 "options_with_values": [
                   "-H",
                   "--host",
+                  "-c",
                   "--context",
                   "--config",
-                  "--log-level"
+                  "-l",
+                  "--log-level",
+                  "--tlscacert",
+                  "--tlscert",
+                  "--tlskey"
                 ]
               }
             },
@@ -391,9 +411,14 @@
                 "options_with_values": [
                   "-H",
                   "--host",
+                  "-c",
                   "--context",
                   "--config",
-                  "--log-level"
+                  "-l",
+                  "--log-level",
+                  "--tlscacert",
+                  "--tlscert",
+                  "--tlskey"
                 ]
               }
             },
@@ -411,9 +436,14 @@
                 "options_with_values": [
                   "-H",
                   "--host",
+                  "-c",
                   "--context",
                   "--config",
-                  "--log-level"
+                  "-l",
+                  "--log-level",
+                  "--tlscacert",
+                  "--tlscert",
+                  "--tlskey"
                 ]
               }
             },
@@ -435,9 +465,28 @@
                 "options_with_values": [
                   "-H",
                   "--host",
+                  "-c",
                   "--context",
                   "--config",
-                  "--log-level"
+                  "-l",
+                  "--log-level",
+                  "--tlscacert",
+                  "--tlscert",
+                  "--tlskey",
+                  "-f",
+                  "--file",
+                  "-p",
+                  "--project-name",
+                  "--project-directory",
+                  "--env-file"
+                ],
+                "interleaved_options_with_values": [
+                  "-f",
+                  "--file",
+                  "-p",
+                  "--project-name",
+                  "--project-directory",
+                  "--env-file"
                 ]
               }
             },
@@ -455,9 +504,20 @@
                 "options_with_values": [
                   "-H",
                   "--host",
+                  "-c",
                   "--context",
                   "--config",
-                  "--log-level"
+                  "-l",
+                  "--log-level",
+                  "--tlscacert",
+                  "--tlscert",
+                  "--tlskey",
+                  "-f",
+                  "--file",
+                  "-p",
+                  "--project-name",
+                  "--project-directory",
+                  "--env-file"
                 ]
               }
             }
