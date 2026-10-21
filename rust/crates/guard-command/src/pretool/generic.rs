@@ -68,6 +68,14 @@ use extract::extract_generic_signals;
 use result::{generic_action, generic_error_result, generic_result};
 use std::time::Instant;
 
+/// The command a virtualenv activation hands its verdict to, or `None` when
+/// the activation is not one the scan can read through. The pre-tool pass
+/// answers for the projected command, so a caller that routes that answer
+/// somewhere which plans the call again has to plan the same text.
+pub fn venv_activation_target(command: &str, context: super::PathContext<'_>) -> Option<String> {
+    venv_activation_projection::project(command, context)
+}
+
 /// Bounded caller-supplied context, never authenticated provider facts.
 pub struct UntrustedCommandContext {
     pub command: Option<String>,
@@ -191,11 +199,11 @@ pub fn evaluate_pre_tool_envelope_with_execution_context(
     context: super::PathContext<'_>,
     execution_environment: Option<&guard_contracts::GuardExecutionEnvironmentV1>,
 ) -> PreToolResultV1 {
-    let mut context = context;
-    let projected_payload;
+    let mut context =
+        super::PathContext::for_session(context.home_dir, context.cwd, execution_environment);
+    let (projected_payload, cline_payload);
     let mut payload = payload;
     let within;
-    let cline_payload;
     if harness == "cline" {
         if let Some(view) = cline_view::evaluated_view(payload) {
             cline_payload = view;
@@ -887,13 +895,13 @@ fn evaluate_envelope(
         )
     });
     // macOS runs every credential-filtering profile. Windows runs the Python
-    // and Node evaluation profiles, the Vite build and the read-only Node
-    // tools (lint, typecheck and format checks) in an AppContainer, for
-    // harnesses whose shell runs a sink command written for it: Claude Code
-    // (Git Bash) and the Pi family (a bash implementation) take the
-    // POSIX-quoted one for all of them, Codex a PowerShell one for the Python
-    // profile only. Only harnesses that rewrite into the contained sink get
-    // the receipt; others would see a bare deny.
+    // and Node evaluation profiles, the read-only pytest profile, the Vite
+    // build and the read-only Node tools (lint, typecheck and format checks)
+    // in an AppContainer, for harnesses whose shell runs a sink command
+    // written for it: Claude Code (Git Bash) and the Pi family (a bash
+    // implementation) take the POSIX-quoted one for all of them, Codex a
+    // PowerShell one for the Python profile only. Only harnesses that rewrite
+    // into the contained sink get the receipt; others would see a bare deny.
     let windows_contained = match contained_test_reason {
         Some("native_python_eval_readonly_containment_required") => {
             matches!(harness, "claude-code" | "codex" | "omp" | "oh-my-pi" | "pi")
@@ -901,7 +909,8 @@ fn evaluate_envelope(
         Some(
             "native_node_build_output_containment_required"
             | "native_node_tool_readonly_containment_required"
-            | "native_node_eval_readonly_containment_required",
+            | "native_node_eval_readonly_containment_required"
+            | "native_pytest_readonly_containment_required",
         ) => {
             matches!(harness, "claude-code" | "omp" | "oh-my-pi" | "pi")
         }

@@ -12,12 +12,24 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::BTreeMap;
 
+use crate::hook_artifact_compose_policy_tail::PolicyCompositionQueryV1;
+
 /// Schema discriminator for the request.
 pub const HOOK_ARTIFACT_COMPOSE_REQUEST_SCHEMA: &str = "guard-hook-artifact-compose-request.v1";
 /// Schema discriminator for the result.
 pub const HOOK_ARTIFACT_COMPOSE_RESULT_SCHEMA: &str = "guard-hook-artifact-compose-result.v1";
 /// Capability advertised by the runtime when this operation is available.
 pub const HOOK_ARTIFACT_COMPOSE_FEATURE: &str = "hook-artifact-compose-v1";
+/// Capability advertised when the `policy_lookup_select` query is served. A
+/// runtime that predates the query rejects it as an unknown kind, so the
+/// caller requires this feature for that query alone.
+pub const HOOK_ARTIFACT_COMPOSE_POLICY_LOOKUP_FEATURE: &str =
+    "hook-artifact-compose-policy-lookup-v1";
+/// Capability advertised when the `prompt_request_reason` query is served.
+/// A runtime that predates the query rejects it as an unknown kind, so the
+/// caller requires this feature for that query alone.
+pub const HOOK_ARTIFACT_COMPOSE_PROMPT_REASON_FEATURE: &str =
+    "hook-artifact-compose-prompt-reason-v1";
 /// Capability advertised when the `remembered_rule_reason` query is served.
 /// A runtime that predates the query rejects it as an unknown kind, so the
 /// caller requires this feature for that query alone.
@@ -28,6 +40,19 @@ pub const HOOK_ARTIFACT_COMPOSE_REMEMBERED_RULE_FEATURE: &str =
 /// caller requires this feature for that query alone.
 pub const HOOK_ARTIFACT_COMPOSE_PACKAGE_REUSE_FEATURE: &str =
     "hook-artifact-compose-package-reuse-v1";
+/// Capability advertised when the `package_firewall_entitlement` query is
+/// served. A runtime that predates the query rejects it as an unknown kind, so
+/// the caller requires this feature for that query alone.
+pub const HOOK_ARTIFACT_COMPOSE_PACKAGE_FIREWALL_ENTITLEMENT_FEATURE: &str =
+    "hook-artifact-compose-package-firewall-entitlement-v1";
+/// Capability advertised when the `package_firewall_access` query is served.
+pub const HOOK_ARTIFACT_COMPOSE_PACKAGE_FIREWALL_ACCESS_FEATURE: &str =
+    "hook-artifact-compose-package-firewall-access-v1";
+/// Capability advertised when the `signal_composition` query is served. A
+/// runtime that predates the query rejects it as an unknown kind, so the
+/// caller requires this feature for that query alone.
+pub const HOOK_ARTIFACT_COMPOSE_SIGNAL_COMPOSITION_FEATURE: &str =
+    "hook-artifact-compose-signal-composition-v1";
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(deny_unknown_fields)]
@@ -66,11 +91,72 @@ pub enum HookArtifactComposeQueryV1 {
     DecisionCopy(Box<DecisionCopyQueryV1>),
     /// Build the canonical decision and its copy in the same resident request.
     DecisionBuildCopy(Box<DecisionBuildCopyQueryV1>),
+    /// Which of the non-consuming policy lookups the hook is answered from.
+    PolicyLookupSelect(PolicyLookupSelectQueryV1),
+    /// What a flagged prompt request tells the user, before any harness copy.
+    PromptRequestReason(PromptRequestReasonQueryV1),
     /// Why a remembered local rule was refused while local trust is degraded.
     RememberedRuleReason(RememberedRuleReasonQueryV1),
     /// Settle a package request's saved-approval reuse from the reasons the
     /// evaluation carries, folding the saved-block reuse of the same request.
     PackageReuseSettle(Box<PackageReuseSettleQueryV1>),
+    /// Resolve what package-firewall access this home is entitled to.
+    PackageFirewallEntitlement(Box<PackageFirewallEntitlementQueryV1>),
+    /// What a resolved package-firewall entitlement permits on this machine.
+    PackageFirewallAccess(PackageFirewallAccessQueryV1),
+    /// Calibrate a base policy action against a detector run's risk and
+    /// false-positive signals.
+    SignalComposition(Box<SignalCompositionQueryV1>),
+    /// The settled verdict's `policy_composition` trace and receipt
+    /// `approval_source`.
+    PolicyComposition(Box<PolicyCompositionQueryV1>),
+}
+
+/// The store rows the package-firewall entitlement is resolved from.
+///
+/// Every field is read as the store returned it; the resident re-derives the
+/// entitlement from them, so nothing here is a verdict the caller composed.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(deny_unknown_fields)]
+pub struct PackageFirewallEntitlementQueryV1 {
+    /// The `supply_chain_bundle_entitlement` sync payload, `null` when unset.
+    pub bundle_payload: Value,
+    /// The `oauth_local_credentials` sync payload, `null` when unset.
+    pub oauth_payload: Value,
+    /// The OAuth local-credential health record, `null` when unavailable.
+    pub oauth_health: Value,
+    /// The effective Guard connect state at `now`, `null` when there is none.
+    pub connect_state: Value,
+    /// A cloud sync profile exists for this home.
+    pub has_cloud_sync_profile: bool,
+    /// The instant to resolve against as an ISO-8601 UTC string, `null` for
+    /// the resident's own clock.
+    pub now: Option<String>,
+}
+
+/// The resolved entitlement and the local protection a package-firewall
+/// control request is answered against.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(deny_unknown_fields)]
+pub struct PackageFirewallAccessQueryV1 {
+    /// The entitlement as `resolve_package_firewall_entitlement` returned it.
+    pub entitlement: Value,
+    /// The operation to answer for, `null` to answer only the states, the
+    /// offered actions, and the block copy.
+    pub operation: Option<String>,
+    /// A package manager is already shimmed on this machine, so existing local
+    /// protection stays repairable and removable.
+    pub has_installed_managers: bool,
+}
+
+/// The detector run a composition is calibrated from. `signals` are
+/// `RiskSignalV2` payloads exactly as the detector registry emits them, and
+/// `base_action` is the policy action the composition starts from.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(deny_unknown_fields)]
+pub struct SignalCompositionQueryV1 {
+    pub signals: Vec<Value>,
+    pub base_action: Value,
 }
 
 /// The package-request facts the reuse settlement reads. `reasons` is the
@@ -141,6 +227,13 @@ pub struct PolicyArtifactFactsV1 {
     #[serde(default)]
     pub action_class: Option<String>,
     pub skill_is_known_bad: bool,
+    /// The native command floor does not run for this artifact: a package
+    /// request is decided by the package evaluator, and a verified
+    /// explicit-permission allow was already adjudicated against the
+    /// published control layer. The artifact facts answer it so the caller
+    /// need not read the artifact to decide whether to ask for the floor.
+    #[serde(default)]
+    pub skip_native_floor: bool,
 }
 
 impl PolicyArtifactFactsV1 {
@@ -196,6 +289,12 @@ pub struct NativeEdgeFactsV1 {
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(deny_unknown_fields)]
 pub struct PolicyStackQueryV1 {
+    /// The hook event this evaluation runs for.
+    pub event_name: String,
+    /// The runtime artifact's type.
+    pub artifact_type: String,
+    /// The request carries a raw shell command a local tool grant could name.
+    pub has_raw_command: bool,
     pub policy_config: PolicyConfigFactsV1,
     pub runtime: PolicyArtifactFactsV1,
     pub approval_context: PolicyArtifactFactsV1,
@@ -337,6 +436,28 @@ pub struct DecisionCopyQueryV1 {
     pub base_harness_message: Value,
     pub base_dashboard_primary_detail: Value,
     pub remembered_rule_reason: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(deny_unknown_fields)]
+pub struct PolicyLookupSelectQueryV1 {
+    /// The lookups in probe order, the direct artifact first. Each is a saved
+    /// decision lookup result: `decision`, `ignored_local_integrity`,
+    /// `trust_status` and `authority_revision`.
+    pub lookups: Vec<Value>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(deny_unknown_fields)]
+pub struct PromptRequestReasonQueryV1 {
+    /// The harness that submitted the prompt, when one was reported.
+    pub harness: Option<String>,
+    /// Request classes the prompt was classified into.
+    pub prompt_classes: Vec<String>,
+    /// Summary of what the prompt asks for, when one was recorded.
+    pub prompt_summary: Option<String>,
+    /// Composed action for the prompt, when one was reported.
+    pub policy_action: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]

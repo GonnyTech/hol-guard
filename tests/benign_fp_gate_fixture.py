@@ -180,6 +180,23 @@ def build_fixture(root: Path) -> BenignFixture:
     _write(home / ".agent" / "artifacts" / "report.md", "# Report\nInert build report text.\n")
     _write(home / ".agents" / "skills" / "x" / "SKILL.md", "---\nname: x\n---\nSynthetic home skill body.\n")
     _write(home / ".config" / "app-portal" / "settings.json", '{"theme": "dark"}\n')
+    # A tool Guard knows no name for, with the two trees every one of them
+    # keeps: a skills folder and a lane of dated reports. Agents look both up
+    # by the word they remember, which is the shape `.agents` already covers
+    # and no other home dot directory did.
+    _write(
+        home / ".web-client" / "skills" / "usage-rollup" / "SKILL.md",
+        "---\nname: usage-rollup\n---\nSynthetic home skill body.\n",
+    )
+    _write(
+        home / ".web-client" / "skills" / "usage-rollup" / "scripts" / "collect.sh",
+        "#!/bin/sh\necho fixture\n",
+    )
+    _write(home / ".web-client" / "artifacts" / "2026-10" / "run.log", "inert run log\n")
+    _write(
+        home / ".report-lane" / "usage-rollup" / "2026-10" / "web-client-summary.md",
+        "# Summary\nInert report text.\n",
+    )
     # Ordinary files below a hidden home directory: a Node toolchain's manifest
     # and a repository's own workflow. The hidden component is all that sets
     # them apart from any other read.
@@ -195,6 +212,12 @@ def build_fixture(root: Path) -> BenignFixture:
     # `.config`, and a token-shaped file name in an otherwise ordinary place.
     _write(home / ".config/gcloud/credentials.db", "synthetic fixture\n")
     _write(home / ".agents/skills/x/credentials.json", "{}\n")
+    # A directory of local services an agent runs beside its checkouts. The
+    # running server leaves a hidden socket lock in its run directory, which
+    # is all that separates this tree from any other listing.
+    _write(home / "dev-services" / "compose.yaml", "services:\n  db:\n    image: postgres:16\n")
+    _write(home / "dev-services" / "scripts" / "start.sh", "#!/bin/sh\necho start\n")
+    _write(home / "dev-services" / "pg-run" / ".s.PGSQL.5432.lock", "4242\n")
     _write(home / "other-project" / "notes.md", "Notes kept outside the project.\nretry policy: three attempts.\n")
     _write(home / "other-project" / "src" / "report.ts", "export const reportWindow = 'report-window-marker';\n")
     _write(home / "other-project" / "package.json", '{\n  "name": "@acme/app",\n  "version": "1.0.0"\n}\n')

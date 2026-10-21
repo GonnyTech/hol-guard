@@ -498,12 +498,36 @@ def _add_realistic_shapes(main: Path, home: Path, environment: dict[str, str], s
         ("other-project/src/report.ts", SIBLING_REPORT),
         ("other-project/package.json", SIBLING_PACKAGE),
         ("other-project/.keep", ""),
+        # The sibling keeps a .github directory with no workflow file in
+        # it. A probe for its workflows then succeeds and prints nothing,
+        # which is the answer the probe is looking for; without the
+        # directory both commands exit nonzero and the run reads that as
+        # a host failure rather than an empty result.
+        ("other-project/.github/workflows/.keep", ""),
         # Plan and evidence notes agents keep in the harness homes, which they
         # search and print with a discarded stderr like any other file.
         (".codex/plans/acme-plan-findings.md", "# Findings\n- 541 retry window\n- 1367 report window\n"),
         (".codex/plans/acme-plan-todo.md", "# Todo\n- [ ] 541 retry window\n"),
         (".codex/plans/evidence/run-1/summary.json", '{"cases": []}\n'),
         (".claude/plans/acme-plan.md", "# Plan\nSynthetic plan notes.\n"),
+        # A directory of local services an agent runs beside its checkouts:
+        # the running server leaves a hidden socket lock in its run directory,
+        # which is all that separates this tree from any other listing.
+        ("dev-services/compose.yaml", "services:\n  db:\n    image: postgres:16\n"),
+        ("dev-services/scripts/start.sh", "#!/bin/sh\necho start\n"),
+        ("dev-services/pg-run/.s.PGSQL.5432.lock", "4242\n"),
+        # A tool whose name Guard knows nothing about, holding the two trees
+        # every harness keeps: a skills folder and a lane of dated reports.
+        # Agents look both up by the word they remember.
+        (
+            ".web-client/skills/usage-rollup/SKILL.md",
+            "---\nname: usage-rollup\n---\nInert skill body.\n",
+        ),
+        (".web-client/skills/usage-rollup/scripts/collect.sh", "#!/bin/sh\necho fixture\n"),
+        (
+            ".report-lane/usage-rollup/2026-10/web-client-summary.md",
+            "# Summary\nInert report text.\n",
+        ),
         # A plain directory with no .git, where a leaf probe finds nothing.
         (f"{PLAIN_DIRECTORY}/README.txt", "Plain notes directory.\n"),
         # Ordinary files a toolchain and a repository's own automation keep
@@ -520,7 +544,7 @@ def _add_realistic_shapes(main: Path, home: Path, environment: dict[str, str], s
         ("init", "--quiet"),
         ("config", "user.name", "Gauntlet Fixture"),
         ("config", "user.email", "gauntlet@example.invalid"),
-        ("add", "notes.md", "src", "package.json", ".keep"),
+        ("add", "notes.md", "src", "package.json", ".keep", ".github"),
         ("commit", "--quiet", "-m", "Synthetic sibling baseline"),
         ("worktree", "add", "--quiet", "-b", "fix/report-window", str(home / SIBLING_WORKTREE)),
     ):

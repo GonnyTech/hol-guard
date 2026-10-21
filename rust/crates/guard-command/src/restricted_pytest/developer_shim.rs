@@ -60,9 +60,22 @@ pub(super) fn is_developer_tool(path: &Path) -> bool {
     selected_developer_dir().is_some_and(|developer| path_is_within(path, &developer))
 }
 
+/// Whether `path` names a location inside the selected developer directory,
+/// without following any link `path` itself is.
+///
+/// A symlink chain is checked one hop at a time, so each hop has to stand on
+/// its own spelling. [`is_developer_tool`] follows the rest of the chain, which
+/// would admit a writable intermediate link because of where it currently
+/// points.
+pub(super) fn is_in_developer_dir_lexically(path: &Path) -> bool {
+    selected_developer_dir().is_some_and(|developer| path_is_within_lexically(path, &developer))
+}
+
 #[cfg(test)]
 mod tests {
-    use super::{forwarded_tool, is_developer_tool, path_is_within_any};
+    use super::{
+        forwarded_tool, is_developer_tool, is_in_developer_dir_lexically, path_is_within_any,
+    };
     use std::path::Path;
 
     #[test]
@@ -94,6 +107,22 @@ mod tests {
         assert!(!is_developer_tool(Path::new("/bin/ls")));
     }
 
+    /// A link outside the developer directory does not count as inside it
+    /// because it currently points there: the chain check reads each hop as
+    /// spelled, and the link can be repointed after approval.
+    #[test]
+    fn a_link_into_the_developer_directory_is_not_inside_it() {
+        let Some(resolved) = forwarded_tool(Path::new("/usr/bin/python3")) else {
+            return;
+        };
+        assert!(is_in_developer_dir_lexically(&resolved));
+        let outside = tempfile::tempdir().unwrap();
+        let link = outside.path().join("python3");
+        std::os::unix::fs::symlink(&resolved, &link).unwrap();
+        assert!(is_developer_tool(&link));
+        assert!(!is_in_developer_dir_lexically(&link));
+    }
+
     /// The shim resolution moved `/usr/bin/python3` into the developer
     /// directory, which is not a trusted root, so the gate that admits a
     /// contained interpreter has to make the same exemption the executable
@@ -122,5 +151,23 @@ mod tests {
         .expect("a shimmed system interpreter is a valid contained pytest launcher");
         assert_eq!(executable, resolved);
         assert!(launch.ends_with("python3"));
+        // The runner execs `plan.command`, so the shim must not survive into
+        // it: the lookup it would make is the one resolution answered here.
+        assert_eq!(
+            super::super::authority::launched_path(&launch, &executable),
+            resolved
+        );
+    }
+
+    /// A launcher that forwards nowhere keeps its own path, so a virtual
+    /// environment still execs its `bin/python` and keeps that prefix.
+    #[test]
+    fn a_launcher_that_is_not_a_shim_stays_in_the_command() {
+        let launch = Path::new("/bin/ls");
+        let executable = Path::new("/usr/bin/true");
+        assert_eq!(
+            super::super::authority::launched_path(launch, executable),
+            launch
+        );
     }
 }
